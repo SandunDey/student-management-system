@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Auspify Student Management System - A complete full-stack web application to manage student records, admissions, academic performance, and institutional analytics.">
+  <title>EduPulse | Student Management System</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Ambient Background Lighting -->
+  <div class="ambient-glow ambient-glow-1"></div>
+  <div class="ambient-glow ambient-glow-2"></div>
+
+  <!-- Header & Navigation -->
+  <header class="header-wrapper">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="brand-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <span class="brand-title">EduPulse</span>
+          <span class="brand-badge">Full-Stack SMS</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="theme-toggle-btn" class="btn btn-secondary btn-icon" title="Toggle Theme" aria-label="Toggle theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button id="open-add-modal-btn" class="btn btn-primary" aria-label="Add Student">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Student</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <main class="main-layout">
+    <!-- Page Header & Overview -->
+    <div class="page-intro">
+      <div class="intro-text">
+        <h1>Student Records & Information System</h1>
+        <p>Manage admissions, academic tracking, student profiles, and departmental metrics in real time.</p>
+      </div>
+      <div class="intro-badges">
+        <span class="pill-badge"><i class="fa-solid fa-database"></i> SQLite Connected</span>
+        <span class="pill-badge"><i class="fa-solid fa-bolt"></i> REST APIs Active</span>
+        <span class="pill-badge"><i class="fa-solid fa-shield-halved"></i> Auspify Internship Task 2</span>
+      </div>
+    </div>
+
+    <!-- Dashboard Metric Stat Cards -->
+    <section class="stats-grid" aria-label="Summary Statistics">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-title">Total Students</span>
+          <span id="stat-total-students" class="stat-value">0</span>
+          <span class="stat-subtitle">Enrolled in institute</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-title">Active Students</span>
+          <span id="stat-active-students" class="stat-value">0</span>
+          <span class="stat-subtitle">Currently in good standing</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon purple">
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-title">Average GPA</span>
+          <span id="stat-avg-gpa" class="stat-value">0.00</span>
+          <span class="stat-subtitle">Cumulative institutional score</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon amber">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-title">Departments</span>
+          <span id="stat-departments" class="stat-value">0</span>
+          <span class="stat-subtitle">Active academic majors</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls, Filter & Search Panel -->
+    <section class="controls-card" aria-label="Search and Filter Controls">
+      <div class="search-filter-row">
+        <!-- Search Field -->
+        <div class="search-box-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            class="search-input" 
+            placeholder="Search by student name, ID, or email..." 
+            autocomplete="off"
+            aria-label="Search students"
+          >
+        </div>
+
+        <!-- Filter Dropdowns -->
+        <div class="filters-group">
+          <select id="dept-filter" class="filter-select" aria-label="Filter by department">
+            <option value="All">All Departments</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Data Science">Data Science</option>
+            <option value="Electrical Engineering">Electrical Engineering</option>
+            <option value="Software Engineering">Software Engineering</option>
+            <option value="Business Analytics">Business Analytics</option>
+            <option value="Cybersecurity">Cybersecurity</option>
+            <option value="Information Technology">Information Technology</option>
+          </select>
+
+          <select id="status-filter" class="filter-select" aria-label="Filter by status">
+            <option value="All">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Graduated">Graduated</option>
+            <option value="Probation">Probation</option>
+            <option value="On Leave">On Leave</option>
+          </select>
+
+          <select id="sort-by-filter" class="filter-select" aria-label="Sort by field">
+            <option value="id">Sort by: Recent</option>
+            <option value="first_name">Sort by: Name</option>
+            <option value="gpa">Sort by: GPA</option>
+            <option value="enrollment_date">Sort by: Enrollment</option>
+            <option value="department">Sort by: Department</option>
+          </select>
+
+          <button id="sort-order-btn" class="btn btn-secondary btn-icon" title="Toggle Sort Order" aria-label="Toggle sort order">
+            <i class="fa-solid fa-arrow-down-wide-short"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Utilities -->
+      <div class="actions-row">
+        <div class="left-actions">
+          <button id="export-csv-btn" class="btn btn-secondary" aria-label="Export CSV">
+            <i class="fa-solid fa-file-csv"></i> Export CSV
+          </button>
+          <button id="export-json-btn" class="btn btn-secondary" aria-label="Export JSON">
+            <i class="fa-solid fa-file-code"></i> Export JSON
+          </button>
+        </div>
+
+        <div class="right-actions">
+          <button id="reset-demo-btn" class="btn btn-outline" title="Restore default sample records" aria-label="Reset demo data">
+            <i class="fa-solid fa-arrows-rotate"></i> Reset Sample Data
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Student Directory Table -->
+    <section id="table-card" class="table-card" aria-label="Student Records Table">
+      <div class="table-responsive">
+        <table class="students-table">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Student</th>
+              <th>Department</th>
+              <th>GPA</th>
+              <th>Status</th>
+              <th>Enrolled</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="students-table-body">
+            <!-- Dynamic rows generated via app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <div class="empty-icon">
+          <i class="fa-solid fa-user-slash"></i>
+        </div>
+        <h3 class="empty-title">No Students Found</h3>
+        <p class="empty-desc">No records matched your search or filter criteria. Try adjusting filters or create a new student.</p>
+      </div>
+
+      <!-- Table Footer with Pagination -->
+      <div class="table-footer">
+        <div id="pagination-info" class="page-counter">Showing 0 of 0 students</div>
+        <div class="pagination-nav">
+          <button id="prev-page-btn" class="page-btn" disabled aria-label="Previous Page">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <div id="page-numbers-container" style="display: flex; gap: 0.4rem;"></div>
+          <button id="next-page-btn" class="page-btn" disabled aria-label="Next Page">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section class="analytics-section" aria-label="Department Analytics">
+      <div class="analytics-card">
+        <div class="analytics-header">
+          <div class="analytics-title">
+            <i class="fa-solid fa-chart-simple" style="color: var(--primary-600);"></i>
+            Department Enrollment Breakdown
+          </div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Real-time allocation</span>
+        </div>
+        <div id="dept-analytics-list" class="dept-list">
+          <!-- Filled dynamically by app.js -->
+        </div>
+      </div>
+
+      <div class="analytics-card">
+        <div class="analytics-header">
+          <div class="analytics-title">
+            <i class="fa-solid fa-circle-question" style="color: var(--accent-amber);"></i>
+            Quick Overview
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.875rem; color: var(--text-muted);">
+          <p>
+            <strong style="color: var(--text-main);">Full CRUD Features:</strong> Create students with instant unique validation, update contact & major info, delete with confirmation, and view detailed transcripts.
+          </p>
+          <p>
+            <strong style="color: var(--text-main);">Zero Config:</strong> SQLite database is bundled with automatic schema creation and realistic sample data.
+          </p>
+          <p>
+            <strong style="color: var(--text-main);">Instant Export:</strong> Export your live records into CSV for spreadsheet manipulation or JSON for backup.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Add / Edit Student Modal -->
+  <div id="student-modal" class="modal-overlay" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="student-modal-title" class="modal-title">
+          <i class="fa-solid fa-user-plus"></i> Add New Student
+        </h2>
+        <button id="close-student-modal-btn" class="modal-close" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="student-form">
+        <div class="modal-body">
+          <div class="form-grid">
+            <!-- Student ID -->
+            <div class="form-group">
+              <label class="form-label" for="student-id-input">Student ID <span class="req">*</span></label>
+              <input type="text" id="student-id-input" class="form-control" required placeholder="e.g. STU-2026-101">
+            </div>
+
+            <!-- Department -->
+            <div class="form-group">
+              <label class="form-label" for="dept-input">Department <span class="req">*</span></label>
+              <select id="dept-input" class="form-control" required>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Electrical Engineering">Electrical Engineering</option>
+                <option value="Software Engineering">Software Engineering</option>
+                <option value="Business Analytics">Business Analytics</option>
+                <option value="Cybersecurity">Cybersecurity</option>
+                <option value="Information Technology">Information Technology</option>
+              </select>
+            </div>
+
+            <!-- First Name -->
+            <div class="form-group">
+              <label class="form-label" for="first-name-input">First Name <span class="req">*</span></label>
+              <input type="text" id="first-name-input" class="form-control" required placeholder="John">
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+              <label class="form-label" for="last-name-input">Last Name <span class="req">*</span></label>
+              <input type="text" id="last-name-input" class="form-control" required placeholder="Doe">
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-group">
+              <label class="form-label" for="email-input">Email Address <span class="req">*</span></label>
+              <input type="email" id="email-input" class="form-control" required placeholder="student@campus.edu">
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label class="form-label" for="phone-input">Phone Number</label>
+              <input type="text" id="phone-input" class="form-control" placeholder="+1 (555) 000-0000">
+            </div>
+
+            <!-- GPA -->
+            <div class="form-group">
+              <label class="form-label" for="gpa-input">Cumulative GPA (0.0 - 4.0) <span class="req">*</span></label>
+              <input type="number" id="gpa-input" class="form-control" step="0.01" min="0" max="4.0" required placeholder="3.75">
+            </div>
+
+            <!-- Status -->
+            <div class="form-group">
+              <label class="form-label" for="status-input">Academic Status</label>
+              <select id="status-input" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Graduated">Graduated</option>
+                <option value="Probation">Probation</option>
+                <option value="On Leave">On Leave</option>
+              </select>
+            </div>
+
+            <!-- Enrollment Date -->
+            <div class="form-group">
+              <label class="form-label" for="enrollment-date-input">Enrollment Date <span class="req">*</span></label>
+              <input type="date" id="enrollment-date-input" class="form-control" required>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+              <label class="form-label" for="gender-input">Gender</label>
+              <select id="gender-input" class="form-control">
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Avatar Preview & Generator -->
+            <div class="form-group full-width">
+              <label class="form-label">Profile Avatar</label>
+              <div class="avatar-preview-container">
+                <img id="avatar-preview-img" src="" alt="Avatar Preview" class="avatar-preview-img">
+                <input type="url" id="avatar-url-input" class="form-control" placeholder="Image URL or auto-generated Dicebear avatar">
+                <button type="button" id="refresh-avatar-btn" class="btn btn-secondary" title="Generate New Avatar">
+                  <i class="fa-solid fa-dice"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Residential Address -->
+            <div class="form-group full-width">
+              <label class="form-label" for="address-input">Residential Address</label>
+              <input type="text" id="address-input" class="form-control" placeholder="Street, City, State, ZIP">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancel-student-modal-btn" class="btn btn-outline">Cancel</button>
+          <button type="submit" id="save-student-btn" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Save Record
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. View Student Details Modal -->
+  <div id="view-modal" class="modal-overlay" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <i class="fa-solid fa-id-card"></i> Student Profile
+        </h2>
+        <button id="close-view-modal-btn" class="modal-close" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div id="view-details-container" class="view-details-card">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Delete Confirmation Modal -->
+  <div id="delete-modal" class="modal-overlay" aria-modal="true" role="dialog">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 class="modal-title" style="color: var(--accent-rose);">
+          <i class="fa-solid fa-triangle-exclamation"></i> Delete Student
+        </h2>
+        <button id="close-delete-modal-btn" class="modal-close" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" style="text-align: center; padding: 1.75rem 1.5rem;">
+        <div style="font-size: 3rem; color: var(--accent-rose); margin-bottom: 1rem;">
+          <i class="fa-regular fa-trash-can"></i>
+        </div>
+        <p style="font-size: 1rem; color: var(--text-main); font-weight: 700;">
+          Are you sure you want to delete <span id="delete-target-name" style="color: var(--primary-600);"></span>?
+        </p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+          This action will permanently remove the student's records from the database.
+        </p>
+      </div>
+
+      <div class="modal-footer" style="justify-content: center;">
+        <button type="button" id="cancel-delete-btn" class="btn btn-outline">Cancel</button>
+        <button type="button" id="confirm-delete-btn" class="btn btn-danger">
+          <i class="fa-solid fa-trash-can"></i> Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>
+      EduPulse <span>Student Management System</span> &bull; Auspify Technologies Full-Stack Internship Program &bull; 
+      Built with Node.js, Express, SQLite & Vanilla CSS/JS
+    </p>
+  </footer>
+
+  <!-- App Script -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
